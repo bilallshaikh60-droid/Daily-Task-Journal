@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "Task-App",
-    "slug": "Task-App",
+    "name": "Daily Task Journal",
+    "slug": "daily-task-journal",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "taskapp",
-    "userInterfaceStyle": "automatic",
+    "scheme": "dailytaskjournal",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.dailytaskjournal"
     },
     "web": {
       "output": "static",
@@ -38,11 +39,19 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker",
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "56f6377c-df39-46ca-a39f-7a6b36688193"
+      }
     }
   }
 }
