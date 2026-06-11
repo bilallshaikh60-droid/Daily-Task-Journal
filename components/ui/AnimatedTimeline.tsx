@@ -10,8 +10,10 @@ interface TimelineNode {
   title: string;
   subtitle: string;
   isActive?: boolean;
-  tasks?: string[];       // ← add
-  completed?: number[];   // ← add
+  tasks?: string[];
+  completed?: number[];
+  doneCount?: number;
+  pendingCount: number;
 }
 
 interface Props {
@@ -30,8 +32,23 @@ export default function AnimatedTimeline({ node, onToggleTask }: Props) {
       </View>
       <View style={styles.content}>
         <Text style={[styles.date, { color: colors.mutedText }]}>{node.date}</Text>
-        <Text style={[styles.title, { color: colors.text }]}>{node.title}</Text>
-
+        <View style={styles.badgeRow}>
+          {(node.doneCount ?? 0) > 0 && (
+            <View style={[styles.badge, styles.badgeDone]}>
+              <Ionicons name="checkmark-circle" size={13} color="#16a34a" />
+              <Text style={styles.badgeTextDone}>{node.doneCount} completed</Text>
+            </View>
+          )}
+          {(node.pendingCount ?? 0) > 0 && (
+            <View style={[styles.badge, styles.badgePending]}>
+              <Ionicons name="time-outline" size={13} color="#dc2626" />
+              <Text style={styles.badgeTextPending}>{node.pendingCount} pending</Text>
+            </View>
+          )}
+          {(node.doneCount === 0 && node.pendingCount === 0) && (
+            <Text style={[styles.title, { color: colors.text }]}>{node.title}</Text>
+          )}
+        </View>
         {node.tasks && node.tasks.length > 0 && (
           <View style={styles.taskList}>
             {node.tasks.map((task, index) => {
@@ -131,4 +148,34 @@ const styles = StyleSheet.create({
   taskTextDone: {
     textDecorationLine: 'line-through'
   },
+  badgeRow: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  gap: 6,
+  marginVertical: 4,
+},
+badge: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: 4,
+  paddingHorizontal: 8,
+  paddingVertical: 3,
+  borderRadius: 999,
+},
+badgeDone: {
+  backgroundColor: '#dcfce7', // light green
+},
+badgePending: {
+  backgroundColor: '#fee2e2', // light red
+},
+badgeTextDone: {
+  fontSize: FontSize.xs,
+  fontWeight: '600',
+  color: '#16a34a', // dark green text
+},
+badgeTextPending: {
+  fontSize: FontSize.xs,
+  fontWeight: '600',
+  color: '#dc2626', // dark red text
+},
 });

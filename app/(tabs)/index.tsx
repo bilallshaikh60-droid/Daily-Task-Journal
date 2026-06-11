@@ -1,5 +1,6 @@
 import DateSelectorField from '@/components/ui/DateSelectorField';
 import EmptyState from '@/components/ui/EmptyState';
+import EntryCard from '@/components/ui/EntryCard';
 import FloatingAddButton from '@/components/ui/FloatingAddButton';
 import InsightsCard from '@/components/ui/InsightsCard';
 import ProgressRing from '@/components/ui/ProgressRing';
@@ -25,6 +26,8 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TodayTaskList from '@/components/ui/TodayTaskList';
+import { Spacing } from '@/constants/theme';
 
 let idCounter = 0;
 function generateId(): string {
@@ -229,7 +232,7 @@ export default function HomeScreen() {
           <ScreenHeader title="Daily Task Journal" subtitle={new Date(getTodayString() + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} />
           <EmptyState onAddFirst={handleQuickAddToday} />
           <FloatingAddButton onPress={handleQuickAddToday} />
-        </View> 
+        </View>
       </SafeAreaView>
     );
   }
@@ -243,7 +246,7 @@ export default function HomeScreen() {
         <ScreenHeader title="Daily Task Journal" subtitle={new Date(getTodayString() + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} />
 
         <FlatList
-          data={['progress', 'heatmap', 'insights']}
+          data={['progress', 'heatmap', 'insights', 'today']}
           keyExtractor={item => item}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => {
@@ -264,6 +267,29 @@ export default function HomeScreen() {
                       {todayEntry ? 'Update Today' : 'Log Today'}
                     </Text>
                   </TouchableOpacity>
+                </View>
+              );
+            }
+            if (item === 'today' && todayEntry) {
+              return (
+                <View style={[screenStyles.insightsSection, { paddingBottom: Spacing.md }]}>
+                  <Text style={[screenStyles.sectionTitle, { color: colors.text }]}>Today's Tasks</Text>
+                  <TodayTaskList
+                    entry={todayEntry}
+                    onToggleTask={async (index) => {
+                      const completed = todayEntry.completed ?? [];
+                      const updatedCompleted = completed.includes(index)
+                        ? completed.filter(i => i !== index)
+                        : [...completed, index];
+                      await storage.saveEntry({ ...todayEntry, completed: updatedCompleted });
+                      await loadEntries();
+                    }}
+                    onEdit={handleQuickAddToday} 
+                    onDelete={async (id) => {
+                      await storage.deleteEntry(id);
+                      await loadEntries();
+                    }}
+                  />
                 </View>
               );
             }
