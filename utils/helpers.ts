@@ -33,7 +33,7 @@ export function generateInsights(entries: TaskEntry[]): string[] {
 
   const totalCompleted = entries.reduce((sum, e) => sum + getCompletedCount(e), 0);
   if (totalCompleted > 0) {
-    insights.push(`You completed ${totalCompleted} tasks across all entries.`);
+    insights.push(`You completed ${totalCompleted} ${totalCompleted === 1 ? 'task' : 'tasks'} across all entries.`);
   }
 
   const dayDistribution = [0, 0, 0, 0, 0, 0, 0];
@@ -52,7 +52,7 @@ export function generateInsights(entries: TaskEntry[]): string[] {
     }
   });
   if (maxCount > 0 && maxDay) {
-    insights.push(`Your most productive day was ${maxDay} with ${maxCount} tasks.`);
+    insights.push(`Your most productive day was ${maxDay} with ${maxCount} ${maxCount === 1 ? 'task' : 'tasks'}.`);
   }
 
   const todayStr = getTodayString();
@@ -60,7 +60,7 @@ export function generateInsights(entries: TaskEntry[]): string[] {
   if (todayEntry) {
     const todayDone = getCompletedCount(todayEntry);
     if (todayDone > 0) {
-      insights.push(`You've completed ${todayDone} tasks today. Keep going!`);
+      insights.push(`You've completed ${todayDone} ${todayDone === 1 ? 'task' : 'tasks'} today. Keep going!`);
     }
   }
 
