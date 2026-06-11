@@ -47,7 +47,7 @@ export default function FloatingAddButton({ onPress }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     bottom: -24,

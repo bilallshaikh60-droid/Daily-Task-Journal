@@ -51,6 +51,9 @@ export default function TaskInputRow({ value, onChange, onDelete, index, complet
           onChangeText={onChange}
           placeholder={`Task ${index + 1}`}
           placeholderTextColor={colors.mutedText}
+          multiline
+          scrollEnabled={false}
+          textAlignVertical="top"
         />
       </View>
 
@@ -64,21 +67,19 @@ export default function TaskInputRow({ value, onChange, onDelete, index, complet
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: Spacing.sm,
     marginBottom: Spacing.sm,
   },
   wrapper: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
     borderRadius: BorderRadius.lg,
     paddingHorizontal: Spacing.md,
     borderWidth: 1,
+    minHeight: 44,
   },
   input: {
-    flex: 1,
+    minHeight: 44,
     fontSize: FontSize.md,
     paddingVertical: Spacing.sm,
   },

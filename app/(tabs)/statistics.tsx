@@ -12,6 +12,7 @@ import { useCallback, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+
 export default function StatisticsScreen() {
   const { colors, isDark } = useTheme();
   const [entries, setEntries] = useState<TaskEntry[]>([]);
@@ -123,7 +124,7 @@ export default function StatisticsScreen() {
           </Text>
         </View>
       </ScrollView>
-      <FloatingAddButton onPress={() => router.push('/')} />
+      <FloatingAddButton onPress={() => {router.push('/');}} />
       </View>
     </SafeAreaView>
   );
