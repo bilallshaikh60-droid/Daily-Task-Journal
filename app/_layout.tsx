@@ -7,7 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-global.Buffer = Buffer;
+(globalThis as any).Buffer = Buffer;
 
 function AppNavigationLayout() {
   const { colors, isDark } = useTheme();
@@ -32,7 +32,6 @@ function AppNavigationLayout() {
         </Stack>
         <StatusBar
           style={isDark ? 'light' : 'dark'}
-          backgroundColor={colors.card}
         />
       </SafeAreaProvider>
     </WorkingDaysProvider>
