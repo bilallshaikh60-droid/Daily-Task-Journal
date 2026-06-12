@@ -89,7 +89,7 @@ export default function EntryCard({ entry, onEdit, onDelete, onRemoveTask, onTog
         <View style={styles.taskList}>
           {tasks.map((task, index) => {
             const isDone = completed.includes(index);
-            const key = `${index}-${task.substring(0, 20)}`;
+            const key = `task-${entry.id}-${index}`;
 
             return (
               <Swipeable

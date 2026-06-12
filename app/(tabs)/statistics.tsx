@@ -76,7 +76,7 @@ export default function StatisticsScreen() {
           <View style={statsStyles.gridItem}><StatCard label="Active Days" value={totalDaysTracked} color={colors.secondary} /></View>
           <View style={statsStyles.gridItem}><StatCard label="Longest Streak" value={`${longestStreak} ${longestStreak === 1 ? 'day' : 'days'}`} color={colors.secondary} /></View>
           <View style={statsStyles.gridItem}><StatCard label="Avg Tasks/Day" value={avgTasksPerDay} color="#FBBF24" /></View>
-          <View style={statsStyles.gridItem}><StatCard label="Completed" value={totalCompleted} color={colors.success} /></View>
+          <View style={statsStyles.gridItem}><StatCard label="Tasks Completed" value={totalCompleted} color={colors.success} /></View>
           <View style={statsStyles.gridItem}><StatCard label="Completion Rate" value={`${totalCompletionRate}%`} color={colors.success} /></View>
         </View>
 

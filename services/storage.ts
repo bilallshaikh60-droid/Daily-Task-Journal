@@ -19,10 +19,9 @@ async function asGetByDate(date: string): Promise<TaskEntry | null> {
 
 async function asSave(entry: TaskEntry): Promise<void> {
   const all = await asGetAll();
-  const idx = all.findIndex(e => e.date === entry.date);
-  if (idx >= 0) all[idx] = entry;
-  else all.push(entry);
-  await AsyncStorage.setItem(ENTRIES_KEY, JSON.stringify(all));
+  const filtered = all.filter(e => e.id !== entry.id && e.date !== entry.date);
+  filtered.push(entry);
+  await AsyncStorage.setItem(ENTRIES_KEY, JSON.stringify(filtered));
 }
 
 async function asDelete(id: string): Promise<TaskEntry[]> {
