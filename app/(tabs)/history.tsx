@@ -1,7 +1,7 @@
 import AnimatedTimeline from '@/components/ui/AnimatedTimeline';
 import EmptyState from '@/components/ui/EmptyState';
 import EntryCard from '@/components/ui/EntryCard';
-import FloatingAddButton from '@/components/ui/FloatingAddButton'; // ← add
+import FloatingAddButton from '@/components/ui/FloatingAddButton';
 import ScreenHeader from '@/components/ui/ScreenHeader';
 import { historyStyles } from '@/constants/styles';
 import { TaskEntry } from '@/constants/types';
@@ -117,10 +117,10 @@ export default function HistoryScreen() {
   if (entries.length === 0 && !searchQuery) {
     return (
       <SafeAreaView edges={['top', 'bottom']} style={[historyStyles.container, { backgroundColor: colors.background }]}>
-        <View style={{ flex: 1 }}>  
+        <View style={{ flex: 1 }}>
           <ScreenHeader title="History" />
           <EmptyState onAddFirst={() => router.push('/')} />
-          <FloatingAddButton onPress={() => router.push('/')} /> 
+          <FloatingAddButton onPress={() => router.push('/')} />
         </View>
       </SafeAreaView>
     );
@@ -129,100 +129,102 @@ export default function HistoryScreen() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView edges={['top', 'bottom']} style={[historyStyles.container, { backgroundColor: colors.background }]}>
-         <View style={{ flex: 1 }}>
-        <ScreenHeader title="History" subtitle={`${sortedEntries.length} entries`} />
+        <View style={{ flex: 1 }}>
+          <ScreenHeader title="History" subtitle={`${sortedEntries.length} entries`} />
 
-        <View style={historyStyles.searchContainer}>
-          <View style={[historyStyles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Ionicons name="search" size={18} color={colors.mutedText} />
-            <TextInput
-              style={[historyStyles.searchInput, { color: colors.text }]}
-              value={searchQuery}
-              onChangeText={handleSearch}
-              placeholder="Search dates or tasks..."
-              placeholderTextColor={colors.mutedText}
-            />
-            {searchQuery.length > 0 && (
-              <TouchableOpacity onPress={() => handleSearch('')}>
-                <Ionicons name="close-circle" size={20} color={colors.mutedText} />
+          <View style={historyStyles.searchContainer}>
+            <View style={[historyStyles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Ionicons name="search" size={18} color={colors.mutedText} />
+              <TextInput
+                style={[historyStyles.searchInput, { color: colors.text }]}
+                value={searchQuery}
+                onChangeText={handleSearch}
+                placeholder="Search dates or tasks..."
+                placeholderTextColor={colors.mutedText}
+              />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => handleSearch('')}>
+                  <Ionicons name="close-circle" size={20} color={colors.mutedText} />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            <View style={[historyStyles.viewToggle, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <TouchableOpacity
+                style={[historyStyles.toggleBtn, viewMode === 'cards' && { backgroundColor: colors.cardLight }]}
+                onPress={() => setViewMode('cards')}
+              >
+                <Ionicons
+                  name="grid-outline"
+                  size={20}
+                  color={viewMode === 'cards' ? colors.primary : colors.mutedText}
+                />
               </TouchableOpacity>
-            )}
+              <TouchableOpacity
+                style={[historyStyles.toggleBtn, viewMode === 'timeline' && { backgroundColor: colors.cardLight }]}
+                onPress={() => setViewMode('timeline')}
+              >
+                <Ionicons
+                  name="time-outline"
+                  size={20}
+                  color={viewMode === 'timeline' ? colors.primary : colors.mutedText}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
 
-          <View style={[historyStyles.viewToggle, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <TouchableOpacity
-              style={[historyStyles.toggleBtn, viewMode === 'cards' && { backgroundColor: colors.cardLight }]}
-              onPress={() => setViewMode('cards')}
-            >
-              <Ionicons
-                name="grid-outline"
-                size={20}
-                color={viewMode === 'cards' ? colors.primary : colors.mutedText}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[historyStyles.toggleBtn, viewMode === 'timeline' && { backgroundColor: colors.cardLight }]}
-              onPress={() => setViewMode('timeline')}
-            >
-              <Ionicons
-                name="time-outline"
-                size={20}
-                color={viewMode === 'timeline' ? colors.primary : colors.mutedText}
-              />
-            </TouchableOpacity>
-          </View>
+          {viewMode === 'cards' ? (
+            <FlatList
+              data={sortedEntries}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={historyStyles.list}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
+              }
+              renderItem={({ item }) => (
+                <EntryCard
+                  entry={item}
+                  onEdit={handleEdit}
+                  onDelete={handleDeleteEntry}
+                  onRemoveTask={(index) => handleRemoveTask(item, index)}
+                  onToggleTask={(index) => handleToggleTask(item, index)}
+                />
+              )}
+              ListFooterComponent={<View style={{ height: 140 }} />}
+
+            />
+
+          ) : (
+            <FlatList
+              data={sortedEntries}
+              keyExtractor={(item) => `timeline-${item.id}`}
+              contentContainerStyle={historyStyles.list}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
+              }
+              renderItem={({ item }) => (
+                <AnimatedTimeline
+                  node={{
+                    id: item.id,
+                    date: formatTimelineDate(item.date),
+                    title: `${item.tasks.length} tasks`,
+                    subtitle: item.date,
+                    isActive: true,
+                    tasks: item.tasks,
+                    completed: item.completed,
+                    doneCount: (item.completed ?? []).length,                          // ← add
+                    pendingCount: item.tasks.length - (item.completed ?? []).length,  // ← add
+                  }}
+                  onToggleTask={(_, taskIndex) => handleToggleTask(item, taskIndex)}
+                />
+              )} 
+              ListFooterComponent={<View style={{ height: 140 }} />}
+            />
+          )}
+          <FloatingAddButton onPress={() => router.push('/')} />
         </View>
-
-        {viewMode === 'cards' ? (
-          <FlatList
-            data={sortedEntries}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={historyStyles.list}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
-            }
-            renderItem={({ item }) => (
-              <EntryCard
-                entry={item}
-                onEdit={handleEdit}
-                onDelete={handleDeleteEntry}
-                onRemoveTask={(index) => handleRemoveTask(item, index)}
-                onToggleTask={(index) => handleToggleTask(item, index)}
-              />
-            )}
-            ListFooterComponent={<View style={{ height: 140 }} />}
-
-          />
-
-        ) : (
-          <FlatList
-            data={sortedEntries}
-            keyExtractor={(item) => `timeline-${item.id}`}
-            contentContainerStyle={historyStyles.list}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
-            }
-            renderItem={({ item }) => (
-              <AnimatedTimeline
-                node={{
-                  id: item.id,
-                  date: formatTimelineDate(item.date),
-                  title: `${item.tasks.length} tasks completed`,
-                  subtitle: item.date,
-                  isActive: true,
-                  tasks: item.tasks,
-                  completed: item.completed,
-                }}
-                onToggleTask={(_, taskIndex) => handleToggleTask(item, taskIndex)}
-              />
-            )}
-            ListFooterComponent={<View style={{ height: 140 }} />}
-          />
-        )}
-        <FloatingAddButton onPress={() => router.push('/')} />
-      </View>
       </SafeAreaView>
     </GestureHandlerRootView>
   );
