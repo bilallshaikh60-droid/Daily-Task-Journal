@@ -214,8 +214,8 @@ export default function HistoryScreen() {
                     isActive: true,
                     tasks: item.tasks,
                     completed: item.completed,
-                    doneCount: (item.completed ?? []).length,                          // ← add
-                    pendingCount: item.tasks.length - (item.completed ?? []).length,  // ← add
+                    doneCount: (item.completed ?? []).length,                          
+                    pendingCount: item.tasks.length - (item.completed ?? []).length, 
                   }}
                   onToggleTask={(_, taskIndex) => handleToggleTask(item, taskIndex)}
                 />
